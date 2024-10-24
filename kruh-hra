@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klikačka</title>
+    <style>
+        /* Styl pro kruh - nastavuje jeho velikost, barvu, kulatý tvar a pozici */
+        #circle {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+        }
+
+        /* Styl pro celé tělo stránky - nastavuje plnou šířku a výšku obrazovky */
+        body {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<div id="circle"></div> <!-- Div element představující červený kruh -->
+</body>
+<script>
+    let interval;         // Proměnná pro časovač
+    let score = 0;        // Počítadlo skóre (kliknutí)
+    let timeLeft = 60;    // Zbývající čas (60 sekund)
+    let circlesize = 50;  // Výchozí velikost kruhu (50px)
+
+    const circle = document.getElementById("circle"); // Odkaz na prvek s id "circle"
+
+    // Funkce, která nastaví náhodnou pozici kruhu na stránce
+    function randomposition(){
+        const body = document.querySelector('body'); // Získání těla stránky
+        const cWidth = body.clientWidth;             // Šířka stránky (okna)
+        const cHeight = body.clientHeight;           // Výška stránky (okna)
+
+        // Náhodné souřadnice X a Y, tak aby kruh nepřesahoval okraje stránky
+        const randomX = Math.floor(Math.random() * (cWidth - circlesize));
+        const randomY = Math.floor(Math.random() * (cHeight - circlesize));
+
+        // Nastavení nové pozice kruhu
+        circle.style.left = randomX + 'px';
+        circle.style.top = randomY + 'px';
+    }
+
+    // Funkce, která se spustí při kliknutí na kruh
+    function onClick(){
+        score++;                           // Zvýší skóre o 1
+        circlesize = Math.max(10, circlesize - 1); // Zmenší kruh o 1 pixel (minimálně na 10px)
+        circle.style.width = circlesize + 'px';    // Nastaví novou šířku kruhu
+        circle.style.height = circlesize + 'px';   // Nastaví novou výšku kruhu
+
+        randomposition();  // Přemístí kruh na novou náhodnou pozici
+    }
+
+    // Funkce, která spustí odpočítávání času
+    function startTimer() {
+        interval = setInterval(() => {
+            timeLeft--;  // Snižuje zbývající čas o 1 sekundu
+
+            if (timeLeft === 0) {   // Když čas dojde na nulu
+                clearInterval(interval);  // Zastaví časovač
+                endGame();                // Ukončí hru
+            }
+        }, 1000); // Nastaví interval na 1000 ms (1 sekunda)
+    }
+
+    // Funkce, která ukončí hru
+    function endGame() {
+        circle.removeEventListener('click', onClick);  // Deaktivuje možnost klikání na kruh
+        alert(`Hra skončila, tvoje skóre je: ${score}`); // Zobrazí skóre v alertu
+    }
+
+    randomposition();  // První náhodná pozice kruhu při načtení stránky
+    startTimer();      // Spustí odpočet času
+    circle.addEventListener('click', onClick);  // Přidá událost kliknutí na kruh
+</script>
+</html>
