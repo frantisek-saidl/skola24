@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    /* Basic styling for the body */
+    body { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      height: 100vh; 
+      background: #f4f4f4; 
+    }
+    /* Styling the game board */
+    #board { 
+      display: grid; 
+      grid-template-columns: repeat(3, 100px); 
+      gap: 5px; 
+    }
+    /* Styling for each cell in the grid */
+    .cell { 
+      width: 100px; 
+      height: 100px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      font-size: 2rem; 
+      background: white; 
+      border: 2px solid #333; 
+      cursor: pointer; 
+    }
+  </style>
+</head>
+<body>
+  <div id="board"></div> <!-- Game board -->
+  <button onclick="restart()">Restart</button> <!-- Button to restart the game -->
+  <p id="status"></p> <!-- Status message for game outcomes -->
+
+  <script>
+    const board = document.getElementById('board'); // Reference to the game board
+    const statusText = document.getElementById('status'); // Reference to status message
+    let currentPlayer = 'X'; // Starting player
+    const cells = Array(9).fill(''); // Array to track cell states
+
+    // Function to check for a winner or a draw
+    function checkWinner() {
+      const winConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6] // Diagonals
+      ];
+      // Check each winning condition
+      for (const [a, b, c] of winConditions) {
+        if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+          statusText.textContent = `${cells[a]} Wins!`; // Display winning message
+          return true; // Return true if a winner is found
+        }
+      }
+      // Check for draw
+      if (!cells.includes('')) {
+        statusText.textContent = 'Draw!'; // Display draw message
+        return true; // Return true if draw
+      }
+      return false; // No winner or draw
+    }
+
+    // Function to handle cell clicks
+    function handleClick(index) {
+      // If the cell is already filled or there's a winner, exit
+      if (cells[index] || checkWinner()) return;
+      cells[index] = currentPlayer; // Set the cell to the current player
+      board.children[index].textContent = currentPlayer; // Update the displayed text
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch players
+      checkWinner(); // Check for a winner after the move
+    }
+
+    // Function to create the game board
+    function createBoard() {
+      board.innerHTML = ''; // Clear previous board
+      cells.forEach((_, index) => {
+        const cell = document.createElement('div'); // Create a new cell
+        cell.className = 'cell'; // Set cell class
+        cell.onclick = () => handleClick(index); // Attach click event
+        board.appendChild(cell); // Add cell to the board
+      });
+    }
+
+    // Function to restart the game
+    function restart() {
+      currentPlayer = 'X'; // Reset starting player
+      cells.fill(''); // Clear the cell states
+      statusText.textContent = ''; // Clear status message
+      createBoard(); // Recreate the board
+    }
+
+    createBoard(); // Initialize the game board
+  </script>
+</body>
+</html>
