@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stopky</title>
+    <style>
+      /* Základní styl pro kontejnery, které obsahují čísla */
+      #stopky {
+        display: flex; /* Uspořádání dětí v řádku */
+        gap: 10px; /* Mezera mezi jednotlivými čísly */
+        justify-content: center; /* Zarovná čísla na střed */
+        margin-bottom: 20px; /* Mezera pod čísly */
+      }
+
+      /* Základní styl pro každý box s číslem */
+      #stopky div {
+        width: 40px; /* Šířka boxu */
+        height: 40px; /* Výška boxu */
+        display: flex; /* Používá flexbox pro zarovnání čísla */
+        justify-content: center; /* Zarovná číslo horizontálně na střed */
+        align-items: center; /* Zarovná číslo vertikálně na střed */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Konektor pro čísla hodiny, minuty a sekundy -->
+    <div id="stopky">
+      <div id="1"></div>
+      <!-- Sekundy -->
+      <div id="2"></div>
+      <!-- Minuty -->
+      <div id="3"></div>
+      <!-- Hodiny -->
+    </div>
+
+    <!-- Tlačítka pro ovládání startu a resetování -->
+    <button id="startButton" onclick="start()">Start</button>
+    <button onclick="reset()">Reset</button>
+
+    <script>
+      // Odkazy na HTML elementy pro čísla (sekundy, minuty, hodiny)
+      const pozice = [
+        document.getElementById("1"),
+        document.getElementById("2"),
+        document.getElementById("3"),
+      ];
+
+      // Proměnné pro uchování hodnot sekundy, minuty a hodiny
+      let valueSek = 0;
+      let valueMin = 0;
+      let valueHod = 0;
+
+      // Proměnné pro uchování ID intervalů
+      let sekundyInterval, minutyInterval, hodinyInterval;
+      let isRunning = false; // Flag pro kontrolu, jestli je stopky spuštěné
+
+      // Funkce pro aktualizaci sekund
+      function sekundy() {
+        pozice[0].innerHTML = valueSek;
+        valueSek++; // Zvyšte sekundy o 1
+        if (valueSek > 9) {
+          valueSek = 0; // Pokud sekundy dosáhnou 10, resetují se na 0
+        }
+      }
+
+      // Funkce pro aktualizaci minut
+      function minuty() {
+        pozice[1].innerHTML = valueMin;
+        valueMin++; // Zvyšte minuty o 1
+        if (valueMin > 9) {
+          valueMin = 0; // Pokud minuty dosáhnou 10, resetují se na 0
+        }
+      }
+
+      // Funkce pro aktualizaci hodin
+      function hodiny() {
+        pozice[2].innerHTML = valueHod;
+        valueHod++; // Zvyšte hodiny o 1
+        if (valueHod > 9) {
+          valueHod = 0; // Pokud hodiny dosáhnou 10, resetují se na 0
+        }
+      }
+
+      // Funkce pro spuštění nebo pauzu stopky
+      function start() {
+        if (!isRunning) {
+          // Pokud stopky nejsou spuštěné, začneme intervaly
+          sekundyInterval = setInterval(sekundy, 1000); // Sekundy se aktualizují každou sekundu
+          minutyInterval = setInterval(minuty, 60000); // Minuty se aktualizují každou minutu
+          hodinyInterval = setInterval(hodiny, 360000); // Hodiny se aktualizují každou hodinu
+          isRunning = true; // Nastavení flagu, že stopky běží
+          document.getElementById("startButton").innerText = "Pause"; // Změní text tlačítka na "Pause"
+        } else {
+          // Pokud stopky již běží, zastavíme intervaly
+          clearInterval(sekundyInterval);
+          clearInterval(minutyInterval);
+          clearInterval(hodinyInterval);
+          isRunning = false; // Nastavení flagu, že stopky jsou pozastavené
+          document.getElementById("startButton").innerText = "Start"; // Změní text tlačítka na "Start"
+        }
+      }
+
+      // Funkce pro resetování stopky na začátek
+      function reset() {
+        clearInterval(sekundyInterval); // Zastaví všechny intervaly
+        clearInterval(minutyInterval);
+        clearInterval(hodinyInterval);
+        valueSek = 0; // Resetuje hodnoty sekund
+        valueMin = 0; // Resetuje hodnoty minut
+        valueHod = 0; // Resetuje hodnoty hodin
+        pozice[0].innerHTML = valueSek; // Aktualizuje displej na hodnoty 0
+        pozice[1].innerHTML = valueMin;
+        pozice[2].innerHTML = valueHod;
+        isRunning = false; // Nastaví stopky na pozastavené
+        document.getElementById("startButton").innerText = "Start"; // Změní text tlačítka zpět na "Start"
+      }
+    </script>
+  </body>
+</html>
